@@ -7,6 +7,7 @@
 - program counter: 현재 명령이 시작되는 메모리 위치를 추적하는 특수 레지스터이다. ex) IP
 - segment register: 활성화된 세그먼트를 추적하는데 사용된다. ex) CS, SS, DS, ES, FS, GS
 - flag register: 다양한 명령에 의해 설정되는 특수 플래그이다. ex) FLAGS
+- accumulator register: 산술 연산에서 사용되는 레지스터이다. ex) AX, BX, CX, DX
 
 한편 20비트 메모리를 표현하기 위해 두 개의 16비트값을 사용한다. segment와 offset이다. 실제 주소를 다음과 같은 식으로 구현했다. 
 
