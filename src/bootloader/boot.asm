@@ -75,6 +75,13 @@ main:
     mov ss, ax
     mov sp, 0x7C00      ; stack grows downwards from where we are loaded in memory
 
+    mov [ebr_drive_number], dl
+
+    mov ax, 1           ; lba = 1, second sector from disk
+    mov cl, 1           ; 1 sector to read
+    mov bx, 0x7E00      ; data should be after the bootloader
+    call disk_read
+
     ; print hello world message
     mov si, msg_hello
     call puts
@@ -118,6 +125,12 @@ lba_to_chs:
     ret
 
 disk_read:
+    push ax
+    push bx
+    push cx
+    push dx
+    push di
+
     push cx                 ; temporarily read cl (number of sectors to read)
     call lba_to_chs         ; compute chs
     pop ax                  ; al = number of sectors to read
@@ -133,12 +146,31 @@ disk_read:
     ; read failed
     popa
     call disk_reset
-    desc di
+    dec di
     test di, di
     jnz .retry
 
 .fail:
     jmp floppy_error
+
+.done:
+    popa
+
+    push di
+    push dx
+    push cx
+    push bx
+    push ax
+    ret
+
+disk_reset:
+    pusha
+    mov ah, 0
+    stc
+    int 13h
+    jc floppy_error
+    popa
+    ret
 
 msg_hello:              db 'Hello world!', ENDL, 0
 msg_read_failed:        db 'Read from disk failed!', ENDL, 0
