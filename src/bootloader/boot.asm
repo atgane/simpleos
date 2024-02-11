@@ -26,9 +26,40 @@ start:
     ; cf = 0 if successful
     ; cf = 1 if error
 
+; converting to protected mode
 lgdt[gdtr]
 
-jmp $
+mov eax, cr0
+or eax, 0x1 ; cr0 레지스터의 PE & PG 비트 활성화
+mov cr0, eax
+
+jmp $+2
+nop
+nop
+
+mov bx, DataSegment
+mov ds, bx
+mov es, bx
+mov fs, bx
+mov gs, bx
+mov ss, bx
+
+jmp dword CodeSegment:0x10000
+
+gdtr:
+    dw gdt_end-gdt-1
+    dd gdt+0x7C00
+
+gdt:
+	dd 0,0 ; NULL 세그
+	CodeSegment equ 0x08
+	dd 0x0000FFFF, 0x00CF9A00 ; 코드 세그
+	DataSegment equ 0x10
+	dd 0x0000FFFF, 0x00CF9200 ; 데이터 세그
+	VideoSegment equ 0x18
+	dd 0x8000FFFF, 0x0040920B ; 비디오 세그
+
+gdt_end:
 
 times 510-($-$$) db 0
 dw 0xAA55

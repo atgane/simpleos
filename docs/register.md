@@ -31,3 +31,7 @@ mov al, [es]
 - ss: stack segment
 - ds: data segment
 - fs, gs: 명칭 없음
+
+시스템 레지스터
+
+- cr0: 보호모드 활성화를 위한 레지스터. 0번 비트는 PE로 보호모드 전환에 활용된다. 31번 비트는 PG로 페이징 활성화를 위해 활용된다. 
