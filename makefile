@@ -1,9 +1,10 @@
 ASM=nasm
 SRC_DIR=src
 BUILD_DIR=build
-FILENAME=build/boot.bin
+DEBUG_DIR=debug
+FILENAME=build/bootloader.bin
 
-.PHONY: floppy_image bootloader clean
+.PHONY: all floppy_image bootloader clean
 
 run: floppy_image
 	qemu-system-x86_64 -fda ${BUILD_DIR}/main_floppy.img
@@ -25,4 +26,5 @@ clean:
 	rm -rf $(BUILD_DIR)/*
 
 dump:
+	mkdir -p $(DEBUG_DIR)
 	xxd $(FILENAME) > debug/o.txt
