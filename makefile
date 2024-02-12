@@ -12,12 +12,16 @@ run: floppy_image
 floppy_image: $(BUILD_DIR)/main_floppy.img
 
 ${BUILD_DIR}/main_floppy.img: bootloader
+	cat $(BUILD_DIR)/sector2.bin >> $(BUILD_DIR)/bootloader.bin  
 	dd if=$(BUILD_DIR)/bootloader.bin of=$(BUILD_DIR)/main_floppy.img
 
-bootloader: $(BUILD_DIR)/bootloader.bin
+bootloader: $(BUILD_DIR)/bootloader.bin $(BUILD_DIR)/sector2.bin
 
 ${BUILD_DIR}/bootloader.bin: always
 	${ASM} ${SRC_DIR}/bootloader/boot.asm -f bin -o ${BUILD_DIR}/bootloader.bin
+
+${BUILD_DIR}/sector2.bin: always
+	${ASM} ${SRC_DIR}/bootloader/sector2.asm -f bin -o ${BUILD_DIR}/sector2.bin
 
 always:
 	mkdir -p $(BUILD_DIR)

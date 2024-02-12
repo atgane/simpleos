@@ -1,13 +1,23 @@
-org 0x7c0
+org 0x7C0
 bits 16
 
-jmp 0x7c0:start
+jmp 0x7C0:start
 
 start:
     ; segment register initializing
     mov ax, 0
     mov ds, ax
     mov es, ax
+
+    mov ax, 0xB800
+    mov es, ax
+
+    mov byte[es:0], 'h'
+    mov byte[es:1], 0x09
+    mov byte[es:2], 'i'
+    mov byte[es:3], 0x09
+
+read:
 
     ; disk sector reading
     mov ax, 0x1000
@@ -25,6 +35,14 @@ start:
     ; return 
     ; cf = 0 if successful
     ; cf = 1 if error
+
+    jc read
+
+    mov dx, 0x3F2 ;플로피디스크 드라이브의
+	xor al, al	; 모터를 끈다
+	out dx, al 
+
+	cli
 
 ; converting to protected mode
 lgdt[gdtr]
