@@ -1,11 +1,11 @@
-org 0x7C0
+org 0
 bits 16
 
 jmp 0x7C0:start
 
 start:
     ; segment register initializing
-    mov ax, 0
+    mov ax, cs
     mov ds, ax
     mov es, ax
 
@@ -72,6 +72,15 @@ gdt:
 	dd 0,0 ; NULL 세그
 	CodeSegment equ 0x08
 	dd 0x0000FFFF, 0x00CF9A00 ; 코드 세그
+    ; 뒤부터
+    ; 0xFFFF seg lim
+    ; 0x0000 base seg 0 ~ 15
+    ; 00 base seg 16 ~ 23
+    ; 9A 속성 필드
+    ; CF 속성 필드
+    ; 00 base seg 24 ~ 31
+    ; 0000 0000 0000 0000 1111 1111 1111 1111
+    ; 0000 0000 1100 1111 1001 1010 0000 0000
 	DataSegment equ 0x10
 	dd 0x0000FFFF, 0x00CF9200 ; 데이터 세그
 	VideoSegment equ 0x18
