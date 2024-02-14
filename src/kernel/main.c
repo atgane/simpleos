@@ -1,4 +1,4 @@
-void main()
+int main()
 {
 	int line = 5;
 	char str[11] = "HelloWorld";
