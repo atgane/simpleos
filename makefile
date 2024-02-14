@@ -3,6 +3,7 @@ SRC_DIR=src
 BUILD_DIR=build
 DEBUG_DIR=debug
 FILENAME=build/bootloader.bin
+GCC=gcc
 
 .PHONY: all floppy_image bootloader clean
 
@@ -12,7 +13,7 @@ run: floppy_image
 floppy_image: $(BUILD_DIR)/main_floppy.img
 
 ${BUILD_DIR}/main_floppy.img: bootloader
-	cat $(BUILD_DIR)/sector2.bin >> $(BUILD_DIR)/bootloader.bin  
+	cat $(BUILD_DIR)/sector2.bin $(BUILD_DIR)/main.bin >> $(BUILD_DIR)/bootloader.bin  
 	dd if=$(BUILD_DIR)/bootloader.bin of=$(BUILD_DIR)/main_floppy.img
 
 bootloader: $(BUILD_DIR)/bootloader.bin $(BUILD_DIR)/sector2.bin
@@ -22,6 +23,14 @@ ${BUILD_DIR}/bootloader.bin: always
 
 ${BUILD_DIR}/sector2.bin: always
 	${ASM} ${SRC_DIR}/bootloader/sector2.asm -f bin -o ${BUILD_DIR}/sector2.bin
+
+kernel: $(BUILD_DIR)/main.bin
+
+$(BUILD_DIR)/main.bin: $(BUILD_DIR)/main.o
+	ld -melf_i386 -Ttext 0x10200 -nostdlib $(BUILD_DIR)/main.o -o $(BUILD_DIR)/main.bin
+
+$(BUILD_DIR)/main.o:
+	gcc -c -m32 -ffreestanding $(SRC_DIR)/kernel/main.c -o $(BUILD_DIR)/main.o
 
 always:
 	mkdir -p $(BUILD_DIR)

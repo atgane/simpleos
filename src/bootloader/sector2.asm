@@ -12,6 +12,6 @@ mov es, ax
 mov byte[es:0x08], 'P'
 mov byte[es:0x09], 0x09
 
-jmp $
+jmp dword CodeSegment:0x10200
 
 times 512-($-$$) db 0
