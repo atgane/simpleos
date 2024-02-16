@@ -26,7 +26,7 @@ read:
                 ; 섹터 1에 대한 데이터를 복사
 
     mov ah, 2   ; 인터럽트 13에 대한 ah 2번 인자는 disk reading
-	mov al, 2   ; 읽을 섹터 수: 1
+	mov al, 20   ; 읽을 섹터 수: 20
 	mov ch, 0   ; 실린더 번호: 0
 	mov cl, 2   ; 섹터 번호: 2
 	mov dh, 0   ; 헤더 번호: 0
