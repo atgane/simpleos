@@ -1,3 +1,5 @@
+#include "interrupt.h"
+
 int main()
 {
 	int line = 5;

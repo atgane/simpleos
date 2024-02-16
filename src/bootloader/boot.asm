@@ -88,7 +88,7 @@ pic:
 	mov al, 0xFF	; 슬레이브 PIC의 모든 인터럽트를
 	out 0xA1, al 	; 봉인
 	dw 0x00eb, 0x00eb
-	mov al, 0xFB	; ~0xFB = 0x02 빼고 나머지 인터럽트를
+	mov al, 0xFB	; ~0xFB = 0b0000 0100 빼고 나머지 인터럽트를
 	out 0x21, al	; 봉인
 
 ; converting to protected mode
