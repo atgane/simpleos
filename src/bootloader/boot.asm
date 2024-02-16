@@ -44,6 +44,53 @@ read:
 
 	cli
 
+pic:
+    ; master pic command: 0x20
+    ; master pic data: 0x21
+    ; slave pic command: 0xA0
+    ; slave pic data: 0xA1
+    
+    ; icw1
+    ; pic 초기화에 이용
+    mov al, 0x11	; 이건 그냥 받아들이자. 0x11이 필요
+	out 0x20, al
+	dw 0x00eb, 0x00eb
+	out 0xA0, al
+	dw 0x00eb, 0x00eb
+	
+    ; icw2
+    ; pic 인터럽트를 받았을 때 irq에 얼마를 더하여 cpu에 알려줄지 지정
+	mov al, 0x20    ; 이것도 받아들이자. 이해를 하지말자
+	out 0x21, al
+	dw 0x00eb, 0x00eb
+	mov al, 0x28    ; 슬레이브 pic는 8 irq가 8 이후부터 시작하므로 8을 더해줌
+	out 0xA1, al
+	dw 0x00eb, 0x00eb
+	
+    ; icw 3
+    ; irq2번에 슬레이브 pic가 연결되어 있다는 것을 마스터 pic에게 알림
+	mov al, 0x04	;0x04 = 1 << 2: ir 2번에 슬레이브 pic가 연결됨
+	out 0x21, al
+	dw 0x00eb, 0x00eb
+	mov al, 0x02	;0x02 = 1 << 1: ir 1번에 irq2가 연결됨(아마도?) 
+	out 0xA1, al
+	dw 0x00eb, 0x00eb
+	
+    ; icw 4
+    ; 추가 명령
+	mov al, 0x01	; 8086모드를 사용
+	out 0x21, al
+	dw 0x00eb, 0x00eb
+	out 0xA1, al
+	dw 0x00eb, 0x00eb
+	
+    ; 인터럽트 봉인
+	mov al, 0xFF	; 슬레이브 PIC의 모든 인터럽트를
+	out 0xA1, al 	; 봉인
+	dw 0x00eb, 0x00eb
+	mov al, 0xFB	; ~0xFB = 0x02 빼고 나머지 인터럽트를
+	out 0x21, al	; 봉인
+
 ; converting to protected mode
 lgdt[gdtr]
 
