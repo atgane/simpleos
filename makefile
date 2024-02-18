@@ -26,10 +26,11 @@ ${BUILD_DIR}/sector2.bin: always
 
 kernel: $(BUILD_DIR)/disk.bin
 
-$(BUILD_DIR)/disk.bin: $(BUILD_DIR)/main.o $(BUILD_DIR)/interrupt.o
+$(BUILD_DIR)/disk.bin: $(BUILD_DIR)/main.o $(BUILD_DIR)/interrupt.o $(BUILD_DIR)/function.o
 	ld -melf_i386 -Ttext 0x10200 -nostdlib \
 		$(BUILD_DIR)/main.o \
 		$(BUILD_DIR)/interrupt.o \
+		$(BUILD_DIR)/function.o \
 		-o $(BUILD_DIR)/main.bin
 	objcopy -O binary $(BUILD_DIR)/main.bin $(BUILD_DIR)/disk.bin
 
@@ -42,6 +43,11 @@ $(BUILD_DIR)/interrupt.o:
 	gcc -c -masm=intel -m32 -ffreestanding \
 		$(SRC_DIR)/kernel/interrupt.c \
 		-o $(BUILD_DIR)/interrupt.o
+
+$(BUILD_DIR)/function.o:
+	gcc -c -masm=intel -m32 -ffreestanding \
+		$(SRC_DIR)/kernel/function.c \
+		-o $(BUILD_DIR)/function.o
 
 always:
 	mkdir -p $(BUILD_DIR)
